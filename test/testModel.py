@@ -1,8 +1,13 @@
 import unittest
 from main.model import Service
 from main.model import Call
+from main.model import ValidationException
+
+def create_service_which_always_succeeds():
+    return Service(0, 1)
 
 class TestService(unittest.TestCase):
+
 
     def test_init(self):
         sut = Service(2, 1000)
@@ -18,6 +23,25 @@ class TestService(unittest.TestCase):
     
     def test_call_with_invalid_value(self):
         sut = Service(2, 5)
-        try {
-            result = sut.call(8)
-        }
+        try:
+            sut.call(8)
+            self.fail("Expected exception")
+        except ValidationException:
+            pass
+    
+    def test_with_dependencies(self):
+        sut = create_service_which_always_succeeds()
+        dependency = Service(3, 3)
+        sut.add_dependency(dependency)
+        result = sut.call(1)
+        self.assertEquals(result, Call.FAIL)
+    
+    def test_with_dependencies_when_self_fails(self):
+        sut = Service(100, 100)
+        dependency = create_service_which_always_succeeds()
+        sut.add_dependency(dependency)
+        result = sut.call(1)
+        self.assertEquals(result, Call.FAIL)
+
+    # Validate if dependency range is same as mine
+    # Dependency calculation
