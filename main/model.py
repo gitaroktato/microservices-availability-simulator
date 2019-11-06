@@ -31,4 +31,6 @@ class Service:
             
 
     def add_dependency(self, dependency):
+        if (dependency.total_rate != self.total_rate):
+            raise ValidationException
         self.dependencies.append(dependency)

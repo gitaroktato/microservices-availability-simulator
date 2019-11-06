@@ -4,7 +4,7 @@ from main.model import Call
 from main.model import ValidationException
 
 def create_service_which_always_succeeds():
-    return Service(0, 1)
+    return Service(0, 100)
 
 class TestService(unittest.TestCase):
 
@@ -31,7 +31,7 @@ class TestService(unittest.TestCase):
     
     def test_with_dependencies(self):
         sut = create_service_which_always_succeeds()
-        dependency = Service(3, 3)
+        dependency = Service(100, 100)
         sut.add_dependency(dependency)
         result = sut.call(1)
         self.assertEquals(result, Call.FAIL)
@@ -43,5 +43,13 @@ class TestService(unittest.TestCase):
         result = sut.call(1)
         self.assertEquals(result, Call.FAIL)
 
-    # Validate if dependency range is same as mine
+    def test_with_dependency_of_different_total_rate(self):
+        sut = Service(2, 5)
+        dependency = Service(2,30)
+        try:
+            sut.add_dependency(dependency)
+            self.fail("Expected exception")
+        except ValidationException:
+            pass
+
     # Dependency calculation

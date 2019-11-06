@@ -1,0 +1,3 @@
+- Read dependency graph from YAML
+- Print out simple total availability
+- Some kind-of GUI?
