@@ -1,4 +1,5 @@
 from enum import Enum
+import random
 
 class ValidationException(Exception):
     def __init__(self, message):
@@ -15,20 +16,18 @@ class Service:
         self.granularity = granularity
         self.dependencies = []
 
-    def self_call(self, pass_fail):
-        if pass_fail > self.granularity:
-            raise ValidationException("Pass-fail {} is bigger than service's granularity {}"
-                .format(pass_fail, self.granularity))
-        elif pass_fail <= self.failure_threshold:
+    def self_call(self):
+        pass_fail = random.randint(1, self.granularity)
+        if pass_fail <= self.failure_threshold:
             return Call.FAIL
         elif pass_fail <= self.granularity and self.failure_threshold < pass_fail:
             return Call.PASS
     
-    def call(self, pass_fail):
+    def call(self):
         for dependency in self.dependencies:
-            if dependency.call(pass_fail) == Call.FAIL:
+            if dependency.call() == Call.FAIL:
                 return Call.FAIL
-        return self.self_call(pass_fail)
+        return self.self_call()
 
     def add_dependency(self, dependency):
         if (dependency.granularity != self.granularity):
