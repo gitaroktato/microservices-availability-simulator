@@ -8,30 +8,37 @@ from main.model import Call
 from main.model import ValidationException
 
 def main():
+    aggregate = Service(5, 10000)
     app = Service(5, 10000)
+    another_app = Service(5, 10000)
     database = Service(5, 10000)
+    cache = Service(5, 10000)
+    aggregate.add_dependency(app)
+    aggregate.add_dependency(another_app)
     app.add_dependency(database)
-    failed = 0
+    app.add_dependency(cache)
     cycles = 100000
-    for i in range(cycles):
-        if app.call() == Call.FAIL:
-            failed += 1
-    print (1 - failed/cycles)
-    # Drawing graph
-    # https://www.geeksforgeeks.org/python-visualize-graphs-generated-in-networkx-using-matplotlib/
-    g = nx.Graph() 
+    for _ in range(cycles):
+        aggregate.call()
+    print (aggregate.get_total_availability_percentage())
+    g = nx.DiGraph() 
     g.add_edge(app, database)
+    g.add_edge(app, cache)
+    g.add_edge(aggregate, app)
+    g.add_edge(aggregate, another_app)
     options = {
         'with_labels': True,
-        'node_size': 4500,
+        'node_size': 500,
         'width': 0.2,
         'labels': {
-            app: 'app - %.2f' % ((1 - 5/10000) * 100),
-            database: 'database - %.2f' % ((1 - 5/10000) * 100)
+            aggregate: 'aggregate - %.2f' % aggregate.get_total_availability_percentage(),
+            another_app: 'another_app - %.2f' % another_app.get_total_availability_percentage(),
+            app: 'app - %.2f' % app.get_total_availability_percentage(),
+            database: 'database - %.2f' % database.get_total_availability_percentage(),
+            cache: 'cache - %.2f' % cache.get_total_availability_percentage()
         }
     }
-    total_availability = 'Total system availability %f' % ((1 - failed/cycles) * 100)
-    nx.draw_shell(g, **options, label = total_availability)
+    nx.draw_spring(g, **options)
     plt.show()
 
 if __name__ == '__main__':

@@ -15,6 +15,17 @@ class Service:
         self.failure_threshold = failure_threshold
         self.granularity = granularity
         self.dependencies = []
+        self.failed_count = 0
+        self.total_count = 0
+
+    def get_self_availability_percentage(self):
+        return (1 - self.failure_threshold / self.granularity) * 100
+
+    def get_total_availability_percentage(self):
+        return (1 - self.failed_count / self.total_count) * 100
+
+    def get_failed_count(self):
+        return self.failed_count
 
     def self_call(self):
         pass_fail = random.randint(1, self.granularity)
@@ -24,6 +35,13 @@ class Service:
             return Call.PASS
     
     def call(self):
+        result = self._inner_call()
+        if result == Call.FAIL:
+            self.failed_count += 1
+        self.total_count += 1
+        return result
+    
+    def _inner_call(self):
         for dependency in self.dependencies:
             if dependency.call() == Call.FAIL:
                 return Call.FAIL
