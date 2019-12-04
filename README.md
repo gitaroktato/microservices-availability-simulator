@@ -1,6 +1,11 @@
 # microservices-availability-simulator
 A software that's using Monte Carlo simulation for showing availability of combination of microservices
 
+# Usage
+See `main.py` as an example on how to use the simulator. You need the following libraries installed:
+- `networkx`
+- `mathplotlib`
+
 # References
 
 ## NxGraph used as a graph library
