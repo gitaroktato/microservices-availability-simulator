@@ -1,5 +1,5 @@
 # importing networkx 
-import networkx as nx 
+from main.gui import Draw
 # importing matplotlib.pyplot 
 import matplotlib.pyplot as plt 
 
@@ -8,38 +8,25 @@ from main.model import Call
 from main.model import ValidationException
 
 def main():
-    aggregate = Service(5, 10000)
-    app = Service(5, 10000)
-    another_app = Service(5, 10000)
-    database = Service(5, 10000)
-    cache = Service(5, 10000)
+    # Configuring microservice structure
+    aggregate = Service(5, 100, 'aggregate')
+    app = Service(5, 100, 'app')
+    another_app = Service(5, 100, 'another_app')
+    database = Service(5, 100, 'database')
+    another_app_db = Service(5, 100, 'database')
+    cache = Service(5, 100, 'cache')
     aggregate.add_dependency(app)
     aggregate.add_dependency(another_app)
     app.add_dependency(database)
     app.add_dependency(cache)
+    another_app.add_dependency(another_app_db)
+    # Simulating calls in cycles
     cycles = 100000
     for _ in range(cycles):
         aggregate.call()
-    print (aggregate.get_total_availability_percentage())
-    g = nx.DiGraph() 
-    g.add_edge(app, database)
-    g.add_edge(app, cache)
-    g.add_edge(aggregate, app)
-    g.add_edge(aggregate, another_app)
-    options = {
-        'with_labels': True,
-        'node_size': 500,
-        'width': 0.2,
-        'labels': {
-            aggregate: 'aggregate - %.2f' % aggregate.get_total_availability_percentage(),
-            another_app: 'another_app - %.2f' % another_app.get_total_availability_percentage(),
-            app: 'app - %.2f' % app.get_total_availability_percentage(),
-            database: 'database - %.2f' % database.get_total_availability_percentage(),
-            cache: 'cache - %.2f' % cache.get_total_availability_percentage()
-        }
-    }
-    nx.draw_spring(g, **options)
-    plt.show()
+    # Drawing from root
+    draw = Draw()
+    draw.draw(aggregate)
 
 if __name__ == '__main__':
     main()
