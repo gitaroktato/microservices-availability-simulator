@@ -11,12 +11,27 @@ class Call(Enum):
 
 class Service:
 
-    def __init__(self, failure_threshold, granularity):
+    def __init__(self, failure_threshold, granularity, name = ''):
         self.failure_threshold = failure_threshold
         self.granularity = granularity
         self.dependencies = []
+        self.failed_count = 0
+        self.total_count = 0
+        self.name = name
 
-    def self_call(self):
+    def get_self_availability_percentage(self):
+        return (1 - self.failure_threshold / self.granularity) * 100
+
+    def get_total_availability_percentage(self):
+        return (1 - self.failed_count / self.total_count) * 100
+
+    def get_failed_count(self):
+        return self.failed_count
+    
+    def get_name(self):
+        return self.name
+
+    def _self_call(self):
         pass_fail = random.randint(1, self.granularity)
         if pass_fail <= self.failure_threshold:
             return Call.FAIL
@@ -24,10 +39,17 @@ class Service:
             return Call.PASS
     
     def call(self):
+        result = self._inner_call()
+        if result == Call.FAIL:
+            self.failed_count += 1
+        self.total_count += 1
+        return result
+    
+    def _inner_call(self):
         for dependency in self.dependencies:
             if dependency.call() == Call.FAIL:
                 return Call.FAIL
-        return self.self_call()
+        return self._self_call()
 
     def add_dependency(self, dependency):
         if (dependency.granularity != self.granularity):
