@@ -7,7 +7,7 @@ See `main.py` as an example on how to use the simulator. You need the following 
 - `mathplotlib`
 
 # Screenshots
-![screenshot1](docs\service_dependency_graph.png)
+![screenshot1](docs/service_dependency_graph.png)
 ![screenshot2](docs/service_dependency_graph_shared_cache.png)
 
 # References
