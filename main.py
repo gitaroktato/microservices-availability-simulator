@@ -1,11 +1,7 @@
 # importing networkx 
 from main.gui import Draw
-# importing matplotlib.pyplot 
-import matplotlib.pyplot as plt 
-
 from main.model import Service
-from main.model import Call
-from main.model import ValidationException
+
 
 def main():
     # Configuring microservice structure
@@ -30,6 +26,7 @@ def main():
     # Drawing from root
     draw = Draw()
     draw.draw(proxy)
+
 
 if __name__ == '__main__':
     main()

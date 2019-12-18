@@ -52,7 +52,7 @@ class Service:
         return self._self_call()
 
     def add_dependency(self, dependency):
-        if (dependency.granularity != self.granularity):
+        if dependency.granularity != self.granularity:
             raise ValidationException("Granularity for dependency {} should be equal to the service's {}"
                 .format(dependency.granularity, self.granularity))
         self.dependencies.append(dependency)

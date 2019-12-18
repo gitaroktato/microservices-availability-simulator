@@ -16,15 +16,16 @@ The dependent service is not responding to any answer, just keep chewing on the 
 ## Timeout
 The service fails to response within the required time interval. Usually this only means that the client's timeout is lower than . The worst case scenario is when client retries.
 
-## 
+## ...
 
 # Understanding total system availability
 ## The model
-I've created a simple [simulation][gihub-simulator-link] to model different kind of scenarios. All the results below were created by the aid of this program. 
+I've created a simple [simulation][gihub-simulator-link] to model different kind of scenarios. All the results below were created by the aid of this software. At high level we don't really need a fully pfledged application with a real network stack to make these calculations. A tiny simulation is going to perform much faster and it's a lot simpler to build. It's allowing us to see the effect of scaling out our system to 100s of nodes, which would be hard to reach with real world scenarios.
 
-## Real world story: Team obliged to maintain things on their own
+## True story: Team obliged to maintain things on their own
 // TODO own story: maintaining services
 
+# Serial and parallel connections
 We will look at two simple examples first, to understand how dependency between each component will affect the whole system's availabilty. In brief, you can connect each one of the components either in series or in parallel.
 
 ## Serial - e.g. application & database

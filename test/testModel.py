@@ -3,8 +3,8 @@ from main.model import Service
 from main.model import Call
 from main.model import ValidationException
 
-class TestService(unittest.TestCase):
 
+class TestService(unittest.TestCase):
 
     def create_service_which_always_succeeds(self):
         return Service(0, 100)
