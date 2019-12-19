@@ -5,7 +5,7 @@ from main.model import Service
 
 def main():
     # Configuring microservice structure
-    poor_developer = Service(0, 100, 'poor_developer')
+    poor_developer = Service(0, 100, 'hapless_developer')
     for i in range(100):
         service = Service(1, 100, 'service-%d' % i)
         poor_developer.add_dependency(service)
@@ -16,6 +16,7 @@ def main():
     # Drawing from root
     draw = Draw()
     draw.draw(poor_developer)
+
 
 if __name__ == '__main__':
     main()

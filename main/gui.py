@@ -1,4 +1,5 @@
-import networkx as nx 
+import networkx as nx
+import math
 import matplotlib.pyplot as plt
 import random
 
@@ -69,6 +70,7 @@ def hierarchy_pos(G, root=None, width=1., vert_gap = 0.2, vert_loc = 0, xcenter 
 
     return _hierarchy_pos(G, root, width, vert_gap, vert_loc, xcenter)
 
+
 class Draw:
 
     DEFAULT_OPTIONS = {
@@ -84,8 +86,9 @@ class Draw:
         self.add_edges(root_service, graph, labels)
         options = dict(self.DEFAULT_OPTIONS)
         options['labels'] = labels
-        pos = hierarchy_pos(graph, root_service)
-        nx.draw(graph, pos, **options)
+        pos = hierarchy_pos(graph, root_service, width=2 * math.pi, xcenter=0)
+        new_pos = {u: (r * math.cos(theta), r * math.sin(theta)) for u, (theta, r) in pos.items()}
+        nx.draw(graph, new_pos, **options)
         plt.show()
 
     def add_edges(self, service, graph, labels):
