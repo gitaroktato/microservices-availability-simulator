@@ -1,4 +1,3 @@
-# importing networkx 
 from main.gui import Draw
 from main.model import Service
 
