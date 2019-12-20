@@ -5,17 +5,17 @@ from main.model import Service
 
 def main():
     # Configuring microservice structure
-    poor_developer = Service(0, 100, 'hapless_developer')
-    for i in range(100):
-        service = Service(1, 100, 'service-%d' % i)
-        poor_developer.add_dependency(service)
+    service = Service(5, 100, 'service')
+    database = Service(5, 100, 'database')
+    another_app_db = Service(5, 100, 'database')
+    service.add_dependency(database)
     # Simulating calls in cycles
     cycles = 100000
     for _ in range(cycles):
-        poor_developer.call()
+        service.call()
     # Drawing from root
     draw = Draw()
-    draw.draw_radial_tree(poor_developer)
+    draw.draw_tree(service)
 
 
 if __name__ == '__main__':

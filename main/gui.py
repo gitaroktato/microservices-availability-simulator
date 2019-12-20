@@ -80,16 +80,32 @@ class Draw:
             'arrowsize': 16
         }
 
-    def draw(self, root_service):
-        graph = nx.DiGraph() 
+    def draw_with_pos(self, root_service, create_pos_function):
+        graph = nx.DiGraph()
         labels = {}
         self.add_edges(root_service, graph, labels)
         options = dict(self.DEFAULT_OPTIONS)
         options['labels'] = labels
+        pos = create_pos_function(graph, root_service)
+        nx.draw(graph, pos, **options)
+        plt.show()
+
+    @staticmethod
+    def create_pos(graph, root_service):
+        pos = hierarchy_pos(graph, root_service)
+        return pos
+
+    @staticmethod
+    def create_radial_pos(graph, root_service):
         pos = hierarchy_pos(graph, root_service, width=2 * math.pi, xcenter=0)
         new_pos = {u: (r * math.cos(theta), r * math.sin(theta)) for u, (theta, r) in pos.items()}
-        nx.draw(graph, new_pos, **options)
-        plt.show()
+        return new_pos
+
+    def draw_tree(self, root_service):
+        self.draw_with_pos(root_service, Draw.create_pos)
+
+    def draw_radial_tree(self, root_service):
+        self.draw_with_pos(root_service, Draw.create_radial_pos)
 
     def add_edges(self, service, graph, labels):
         labels[service] = '%s - %.2f%%' % (service.get_name(), service.get_total_availability_percentage())

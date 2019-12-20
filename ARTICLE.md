@@ -27,15 +27,15 @@ I remember, that I was part of a team which had to provide maintenance to all th
 ![hapless_graph](docs/hapless_developer_graph.png)
 
 # Serial and parallel connections
-We will look at two simple examples first, to understand how dependency between each component will affect the whole system's availabilty. In brief, you can connect each one of the components either in series or in parallel.
+We will look at two simple examples first, to understand how dependency between each component will affect the whole system's availabilty. In brief, you can connect each one of the components either serial or parallel.
 
 ## Serial - e.g. application & database
-In a serial connection both of the components should be available to serve incoming requests to the client. A service and it's database is a good example for this kind of configuration.
-
+In a serial connection both of the components should be available to serve incoming requests to the client. A service and it's database is a good example for this kind of configuration. In the example below, both component has a 95% availability in its own. Because of the dependency, the service's availability is reduced to 90%. The total availability of a serial connection is always lower, than the minimum availability of its components.
+![serial_connection](docs/serial_connection.png)
 
 
 ## Parallel - e.g. clustering
-In a parallel connection only one of the components is required to be available to serve incoming requests to the client. Serving requests from a cluster is a good example, considering that the load balancing logic's availability is 100%. In real world scenarios, using client-side load balancing is close to this kind of setup. 
+In a parallel connection only one of the components is required to be available to serve incoming requests to the client. Serving requests from a cluster is a good example, considering that the load balancing logic's availability is 100%. In real world scenarios, using client-side load balancing is close to this kind of setup. Let's see another example. Here, each component has 95% availability again. 
 
 
 # Decomposing your services

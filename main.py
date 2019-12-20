@@ -25,7 +25,7 @@ def main():
         proxy.call()
     # Drawing from root
     draw = Draw()
-    draw.draw(proxy)
+    draw.draw_tree(proxy)
 
 
 if __name__ == '__main__':
