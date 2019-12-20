@@ -58,13 +58,16 @@ class Service:
         return self._self_call()
 
     def add_dependency(self, dependency: 'Service'):
-        if dependency.granularity != self.granularity:
+        if dependency._get_granularity() != self.granularity:
             raise ValidationException("Granularity for dependency {} should be equal to the service's {}"
-                                      .format(dependency.granularity, self.granularity))
+                                      .format(dependency._get_granularity(), self.granularity))
         self.dependencies.append(dependency)
 
     def get_size(self):
         return 1
+
+    def _get_granularity(self):
+        return self.granularity
 
 
 class Cluster(Service):
@@ -81,7 +84,7 @@ class Cluster(Service):
         return Call.FAIL
 
     def add_dependency(self, dependency: 'Service'):
-        raise ValidationException("Cluster is not allowed to have dependencies")
+        self.service.add_dependency(dependency)
 
     def get_self_availability_percentage(self):
         return 100
@@ -91,3 +94,6 @@ class Cluster(Service):
 
     def get_dependencies(self):
         return self.service.get_dependencies()
+
+    def _get_granularity(self):
+        return self.service._get_granularity()

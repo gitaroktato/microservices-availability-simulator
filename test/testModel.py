@@ -104,14 +104,4 @@ class TestCluster(unittest.TestCase):
         result = cluster.call()
         self.assertEqual(result, Call.FAIL)
 
-    def test_adding_dependency_to_cluster(self):
-        dependency = Service(2, 30)
-        service = Service(0, 1)
-        sut = Cluster(service, 1)
-        try:
-            sut.add_dependency(dependency)
-            self.fail("Expected exception")
-        except ValidationException:
-            pass
-
 # call() can be made only on roots

@@ -5,7 +5,7 @@ from main.model import Cluster
 
 def main():
     # Configuring microservice structure
-    service = Service(5, 100, 'service')
+    service = Service(50, 100, 'service')
     cluster = Cluster(service, 2)
     # Simulating calls in cycles
     cycles = 100000

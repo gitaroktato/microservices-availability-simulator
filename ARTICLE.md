@@ -35,7 +35,8 @@ In a serial connection both of the components should be available to serve incom
 
 
 ## Parallel - e.g. clustering
-In a parallel connection only one of the components is required to be available to serve incoming requests to the client. Serving requests from a cluster is a good example, considering that the load balancing logic's availability is 100%. In real world scenarios, using client-side load balancing is close to this kind of setup. Let's see another example. Here, each component has 95% availability again. 
+In a parallel connection only one of the components is required to be available to serve incoming requests to the client. Serving requests from a cluster is a good example, considering that the load balancing logic's availability is 100%. In real world scenarios, combining client-side load balancing with retries is close to this kind of setup. Let's see another example. Here, each component has 50% availability again. We should have the total availability of 75% after the simulation is finised. The failure rate is halved, which should leave us with 1 - 0.25 availability. The total availability of a parallel connection is always higher, than the availability of its components. Note, that in the python model we only allow parallel connections of the same service component.
+![parallel_connection](docs/parallel_connection.png)
 
 
 # Decomposing your services
