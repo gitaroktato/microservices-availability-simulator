@@ -39,8 +39,17 @@ In a parallel connection only one of the components is required to be available 
 ![parallel_connection](docs/parallel_connection.png)
 
 
-# Decomposing your services
-## Mesh and star
+# Decomposing your services - mesh and star
+The described rules are coming into play first, when we're discussing how to decompose our system into multiple services. Let's imagine, that we've started with a design where every component is talking to each other without any limitation. The whole thing starts becoming a huge mess very fast and nobody understands why the site being down in the majority of the business hours. This situation can easily happen with "big bang" migration projects with a wrongly chosen service decomposition strategy. 
+
+Let's start small and say, that we have only 10 services. Every newly added component will depend on all of the previously existing ones. This adds many layers of abstraction, but more importantly, lots of integration points to worry about! In the model I've added each service with 99% availability. The one in the middle with all the connections has the final availability below 1%!
+![full_mesh](docs/full_mesh.png)
+
+What's the conclusion? How we could improve the overall situation? Well, it's nice to build atop of an existing functionality. But it's way too dangerous to encapsulate every dependency with a network call. We should aim for minimizing the number integration points and create larger services. Reuse dependencies using our dependency management and build system or even duplicate functionalities and implement them multiple times.
+In a situation like this, reversing integration calls, merging services and reimplementing some of the functionalities can help.
+
+
+
 
 ## CRUD services
 https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
