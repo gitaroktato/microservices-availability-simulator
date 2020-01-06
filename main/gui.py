@@ -94,6 +94,17 @@ class Draw:
     def draw_any(self, root_service: Service):
         self.draw_with_pos(root_service, lambda graph, service: None)
 
+    def draw_each(self, services: list):
+        graph = nx.DiGraph()
+        labels = {}
+        for service in services:
+            graph.add_node(service)
+            self.add_edges(service, graph, labels)
+        options = dict(self.DEFAULT_OPTIONS)
+        options['labels'] = labels
+        nx.draw_circular(graph, **options)
+        plt.show()
+
     @staticmethod
     def create_pos(graph, root_service: Service):
         pos = hierarchy_pos(graph, root_service)

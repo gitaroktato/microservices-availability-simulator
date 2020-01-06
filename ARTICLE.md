@@ -42,14 +42,26 @@ In a parallel connection only one of the components is required to be available 
 # Decomposing your services - mesh and star
 The described rules are coming into play first, when we're discussing how to decompose our system into multiple services. Let's imagine, that we've started with a design where every component is talking to each other without any limitation. The whole thing starts becoming a huge mess very fast and nobody understands why the site being down in the majority of the business hours. This situation can easily happen with "big bang" migration projects with a wrongly chosen service decomposition strategy. 
 
-Let's start small and say, that we have only 10 services. Every newly added component will depend on all of the previously existing ones. This adds many layers of abstraction, but more importantly, lots of integration points to worry about! In the model I've added each service with 99% availability. The one in the middle with all the connections has the final availability below 1%!
+Let's start small and say, that we have only 10 services. Every newly added component will depend on all of the previously existing ones. This adds many layers of abstraction, but more importantly, lots of integration points to worry about! The dependency diagram of these kind of systems ofthen looks like a full mesh. In the python model I've added each service with 99% availability. Each newly added service will depend on all existing nodes. The last one in the middle with all the connections has the estimated availability below 1%!
 ![full_mesh](docs/full_mesh.png)
 
 What's the conclusion? How we could improve the overall situation? Well, it's nice to build atop of an existing functionality. But it's way too dangerous to encapsulate every dependency with a network call. We should aim for minimizing the number integration points and create larger services. Reuse dependencies using our dependency management and build system or even duplicate functionalities and implement them multiple times.
 In a situation like this, reversing integration calls, merging services and reimplementing some of the functionalities can help.
 
+## Shifting towards star topology
+Now, let's see another topology. Let's assume that every component in our system is communicating through a "gateway". Will this change our availability balance towards a positive direction?
 
+In the diagram below every service has 95% availability. Each one of them has only one dependency: The cluster of brokers in the middle. We're using 2 separate brokers with 95% availability. You can see, that the availability improved overall. Clustering increases availability of the brokers up to 99.75% and each service lost just a proportional amount of their of availability.
+![star-with-clustering](docs/star_with_clustering.png)
 
+Message driven architectures often have a message broker in the middle, implemented by Kafka or RabbitMQ or similar technology. The aim of this kind of setup is to keep pushing the common dependnecy's availability and reliability. This can be achived, by the following techniques.
+
+### Eliminating single point of failures from deployments
+Careful evaluation of the chosen technology's configuration can help you avoiding a lot of headaches. This is not so simple as it sounds and often needs dedicated personnel for properly provisioning the cluster for you.
+If you're using cloud providers, check the availability of managed services. For instance AWS is offering SQS, SNS and managed Kafka clusters as well.
+
+### Partitioning your brokers
+Eveny if you're confident in the chosen technology, it's advisable to partition your cluster of brokers amongst the teams. It's going to help, when you need to roll out new configurations and improvements. For instance, you can deliver them to a single partition at first and then back off if something goes wrong. 
 
 ## CRUD services
 https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
