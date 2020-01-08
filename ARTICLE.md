@@ -69,19 +69,29 @@ Eveny if you're confident in the chosen technology, it's advisable to partition 
 Now, let's look at how we can apply what we've learnt by analyzing the most common microservice patterns. 
 
 ## CRUD services and aggregates
-Often teams encapsulate specific data types with simple CRUD services, lacking any business logic. Even though it looks tempting to create simple CRUD services over databases, it's more trouble than aid for the following reasons: You have to push business logic in the layer above, usually into an aggregate which joins data by calling several CRUD service. This has several drawbacks, like simply reducing availability of the whole system.
+Often teams encapsulate specific data types with simple CRUD services, lacking any business logic. In these cases you have to push business logic in the layer above, usually into an aggregate which joins data by calling several CRUD services. As an alternative you can merge business logic together and just reduce the amount of integration points. But let's see a not-so straightforward scenario. Again, in this case the availability of each individual service is 95% in its own.
+![aggregate-and-cruds](docs\aggregate_and_cruds.png)
+
+We have two CRUD services called by an aggregate. Let's suppose we want to get rid of an integration point, buy merging `another_crud` into `aggregate`. We suspect that the availability looked from the proxy's perspective will increase, so let's do a little simulation and examine the results.
+![aggregate-and-cruds-merged](docs\aggregate_and_cruds_merged.png)
+
+Surprisingly we lost 6.5% of availability! But why? The reason is that we accidentally increased the outbound dependencies of the `aggregate` from 2 to 3. And this made our system's availabilty worse. 
+
+So, the model showed us that we shouldn't stop there. We won't reach the desired effect until we merge both CRUD services into the `aggregate`, which will remind us to a bit more monolythic design.
+![aggregate-and-cruds-merged](docs\aggregate_and_cruds_merged_final.png)
 
 ## Chain of responsibility
 
 
-# Some fault-tolerance patterns and their possible effect
-## retries
+# Summary
+
+## Some fault-tolerance patterns and their possible effect
+### retries
 [Cassandra rapid read protection][cassandra-read-protection]
 [gRPC retries][grpc-retries]
-## fallback
-## defaults
+### fallback
+### defaults
 
-# Summary
 Not just circuit breakers or service mesh
 // TODO GRPC features covering these
 // TODO Istio features covering these

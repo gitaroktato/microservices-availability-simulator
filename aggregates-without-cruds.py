@@ -5,15 +5,14 @@ from main.model import Service
 def main():
     # Configuring microservice structure
     proxy = Service(5, 100, 'proxy')
-    app = Service(5, 100, 'app')
-    another_app = Service(5, 100, 'another_app')
+    aggregate = Service(5, 100, 'aggregate')
     database = Service(5, 100, 'database')
     another_app_db = Service(5, 100, 'database')
-    proxy.add_dependency(another_app)
-    another_app.add_dependency(app)
-    app.add_dependency(database)
-    another_app.add_dependency(app)
-    another_app.add_dependency(another_app_db)
+    cache = Service(5, 100, 'cache')
+    proxy.add_dependency(aggregate)
+    aggregate.add_dependency(database)
+    aggregate.add_dependency(cache)
+    aggregate.add_dependency(another_app_db)
     # Simulating calls in cycles
     cycles = 100000
     for _ in range(cycles):

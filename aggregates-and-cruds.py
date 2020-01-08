@@ -10,10 +10,13 @@ def main():
     another_app = Service(5, 100, 'another_crud')
     database = Service(5, 100, 'database')
     another_app_db = Service(5, 100, 'database')
+    cache = Service(5, 100, 'cache')
     proxy.add_dependency(aggregate)
     aggregate.add_dependency(app)
     aggregate.add_dependency(another_app)
     app.add_dependency(database)
+    app.add_dependency(cache)
+    another_app.add_dependency(cache)
     another_app.add_dependency(another_app_db)
     # Simulating calls in cycles
     cycles = 100000
