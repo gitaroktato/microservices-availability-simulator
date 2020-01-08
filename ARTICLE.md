@@ -54,18 +54,25 @@ Now, let's see another topology. Let's assume that every component in our system
 In the diagram below every service has 95% availability. Each one of them has only one dependency: The cluster of brokers in the middle. We're using 2 separate brokers with 95% availability. You can see, that the availability improved overall. Clustering increases availability of the brokers up to 99.75% and each service lost just a proportional amount of their of availability.
 ![star-with-clustering](docs/star_with_clustering.png)
 
-Message driven architectures often have a message broker in the middle, implemented by Kafka or RabbitMQ or similar technology. The aim of this kind of setup is to keep pushing the common dependnecy's availability and reliability. This can be achived, by the following techniques.
+What are these examples telling us? So, if you really need to have such complexity in the dependencies between services it's better to use messaging as the communication channel. You'll need to look at enterprise integration patterns to figure out how to implement some of the most challenging scenarios.
+
+Message driven architectures often have a message broker in the middle, implemented by Kafka or RabbitMQ or similar technology. The aim of this kind of setup is to keep pushing the common dependnecy's availability and reliability. This can be achived, more or less, by the following techniques.
 
 ### Eliminating single point of failures from deployments
 Careful evaluation of the chosen technology's configuration can help you avoiding a lot of headaches. This is not so simple as it sounds and often needs dedicated personnel for properly provisioning the cluster for you.
 If you're using cloud providers, check the availability of managed services. For instance AWS is offering SQS, SNS and managed Kafka clusters as well.
 
 ### Partitioning your brokers
-Eveny if you're confident in the chosen technology, it's advisable to partition your cluster of brokers amongst the teams. It's going to help, when you need to roll out new configurations and improvements. For instance, you can deliver them to a single partition at first and then back off if something goes wrong. 
+Eveny if you're confident in the chosen technology, it's advisable to partition your cluster of brokers amongst the teams. It's going to help, when you need to roll out new configurations or improvements. For instance, you can deliver them to a single partition at first and then back off if something goes wrong. 
 
-## CRUD services
-https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
-https://www.edureka.co/blog/microservices-design-patterns#Branch
+# Common microservice patterns and their effect on availability
+Now, let's look at how we can apply what we've learnt by analyzing the most common microservice patterns. 
+
+## CRUD services and aggregates
+Often teams encapsulate specific data types with simple CRUD services, lacking any business logic. Even though it looks tempting to create simple CRUD services over databases, it's more trouble than aid for the following reasons: You have to push business logic in the layer above, usually into an aggregate which joins data by calling several CRUD service. This has several drawbacks, like simply reducing availability of the whole system.
+
+## Chain of responsibility
+
 
 # Some fault-tolerance patterns and their possible effect
 ## retries
@@ -99,6 +106,8 @@ Each additional integration point has an additional cost, that needs to be mitig
 https://eventhelix.com/RealtimeMantra/FaultHandling/system_reliability_availability.htm
 https://eventhelix.com/RealtimeMantra/FaultHandling/reliability_availability_basics.htm
 https://www.os3.nl/_media/2013-2014/courses/rp1/p17_report.pdf
+https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
+https://www.edureka.co/blog/microservices-design-patterns#Branch
 
 [cassandra-read-protection]: https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/dml/dmlClientRequestsRead.html
 [grpc-retries]: https://github.com/grpc/proposal/blob/master/A6-client-retries.md
