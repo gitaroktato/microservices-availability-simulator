@@ -15,7 +15,7 @@ def main():
     bff.add_dependency(bff_database)
     bff.add_dependency(cart)
     cart.add_dependency(cart_cache)
-    cart.add_dependency(user)
+    bff.add_dependency(user)
     user.add_dependency(user_database)
     # Simulating calls in cycles
     cycles = 100000

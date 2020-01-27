@@ -5,14 +5,18 @@ from main.model import Service
 def main():
     # Configuring microservice structure
     proxy = Service(5, 100, 'proxy')
-    aggregate = Service(5, 100, 'aggregate')
-    database = Service(5, 100, 'database')
-    another_app_db = Service(5, 100, 'database')
-    cache = Service(5, 100, 'cache')
-    proxy.add_dependency(aggregate)
-    aggregate.add_dependency(database)
-    aggregate.add_dependency(cache)
-    aggregate.add_dependency(another_app_db)
+    bff = Service(5, 100, 'BFF')
+    bff_database = Service(5, 100, 'BFF_database')
+    cart = Service(5, 100, 'cart')
+    cart_cache = Service(5, 100, 'cart_cache')
+    user = Service(5, 100, 'user')
+    user_database = Service(5, 100, 'user_database')
+    proxy.add_dependency(bff)
+    bff.add_dependency(bff_database)
+    bff.add_dependency(cart)
+    cart.add_dependency(cart_cache)
+    cart.add_dependency(user)
+    user.add_dependency(user_database)
     # Simulating calls in cycles
     cycles = 100000
     for _ in range(cycles):

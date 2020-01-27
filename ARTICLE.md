@@ -65,14 +65,14 @@ If you're using cloud providers, check the availability of managed services. For
 ### Partitioning your brokers
 Eveny if you're confident in the chosen technology, it's advisable to partition your cluster of brokers amongst the teams. It's going to help, when you need to roll out new configurations or improvements. For instance, you can deliver them to a single partition at first and then back off if something goes wrong. 
 
-# Common microservice patterns and their effect on availability
-Now, let's look at how we can apply what we've learnt by analyzing the most common microservice patterns. 
+# Two common microservice patterns and their effect on availability
+Now, let's look at how we can apply what we've learnt by analyzing two most common microservice patterns. 
 
 ## CRUD services and aggregates
 Often teams encapsulate specific data types with simple CRUD services, lacking any business logic. In these cases you have to push business logic in the layer above, usually into an aggregate which joins data by calling several CRUD services. As an alternative you can merge business logic together and just reduce the amount of integration points. But let's see a not-so straightforward scenario. Again, in this case the availability of each individual service is 95% in its own.
 ![aggregate-and-cruds](docs\aggregate_and_cruds.png)
 
-We have two CRUD services called by an aggregate. Let's suppose we want to get rid of an integration point, buy merging `another_crud` into `aggregate`. We suspect that the availability looked from the proxy's perspective will increase, so let's do a little simulation and examine the results.
+We have two CRUD services called by an aggregate. Let's suppose we want to get rid of an integration point, by merging `another_crud` into `aggregate`. We suspect that the availability looked from the proxy's perspective will increase, so let's do a little simulation and examine the results.
 ![aggregate-and-cruds-merged](docs\aggregate_and_cruds_merged.png)
 
 Surprisingly we lost 6.5% of availability! But why? The reason is that we accidentally increased the outbound dependencies of the `aggregate` from 2 to 3. And this made our system's availabilty worse. 
@@ -80,17 +80,24 @@ Surprisingly we lost 6.5% of availability! But why? The reason is that we accide
 So, the model showed us that we shouldn't stop there. We won't reach the desired effect until we merge both CRUD services into the `aggregate`, which will remind us to a bit more monolythic design.
 ![aggregate-and-cruds-merged](docs\aggregate_and_cruds_merged_final.png)
 
-## Chain of responsibility
+## Chained calls
+Another common pattern is to form a chain with each service call to simplify data aggregation. In the example below would it be more beneficial to get both the user data and the cart information from the BFF? It's easy to find out by setting up the simulation and evaluating the results.
+![chained-calls](docs\chained_calls.png)
 
+We get somewhat equal availability from both setup, so I say simplicity should be the dealbreaker here. We should consider reusability of the cart service if user data is included with every related cart information. Also we need to take into account which service should provide meaningful defaults, if user information can't be recieved within time. Are these defaults going to be the same in each use-case or different? An user page should be much more sensitive for a failing user request, than a shopping cart page. So the latter design might be more extensible, than the former. Anyway, it's good to know that availability has no significant role in these kind of decisions.
+![chained-calls](docs\chained_calls_from_bff.png)
 
 # Summary
+I've seen a few use-cases, when the total availability of the microservice composition was not feasible at all, so I decided to create my own simulation to help demonstrating the effect of high-level architectural decisisons. As we've seen there are many situations, when it's not self explanatory whenever the results will have positive or negative effect. It's good to be aware of other fault-tolerance related patterns though, these also play significant role in making our services more resilient:
 
-## Some fault-tolerance patterns and their possible effect
-### retries
-[Cassandra rapid read protection][cassandra-read-protection]
+## Retries
+[Cassandra rapid read protection][cassandra-read-protection] is a very good example. This built in functionality ensures that an additional request will be sent if the response is not arriving within a specified timeframe. 
 [gRPC retries][grpc-retries]
-### fallback
-### defaults
+## Exponential backoff
+
+## Fallback
+## Defaults
+## Circuit Breakers
 
 Not just circuit breakers or service mesh
 // TODO GRPC features covering these
@@ -105,7 +112,6 @@ Each additional integration point has an additional cost, that needs to be mitig
 - Circuit breakers
 - ...
 
-# Tools & Technoloiges
 
 # Out of scope
 [Traefik]: https://docs.traefik.io/v2.0/middlewares/ratelimit/
@@ -113,12 +119,18 @@ Each additional integration point has an additional cost, that needs to be mitig
 
 
 # References
+
+## Reliability, availability
 https://eventhelix.com/RealtimeMantra/FaultHandling/system_reliability_availability.htm
 https://eventhelix.com/RealtimeMantra/FaultHandling/reliability_availability_basics.htm
+
+## Whitepapers
 https://www.os3.nl/_media/2013-2014/courses/rp1/p17_report.pdf
+
+## Articles
 https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
 https://www.edureka.co/blog/microservices-design-patterns#Branch
 
-[cassandra-read-protection]: https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/dml/dmlClientRequestsRead.html
+[cassandra-read-protection]: https://docs.datastax.com/en/cassandra-oss/3.x/cassandra/dml/dmlClientRequestsRead.html?hl=rapid%2Cread%2Cprotection#dmlClientRequestsRead__speculative-retry
 [grpc-retries]: https://github.com/grpc/proposal/blob/master/A6-client-retries.md
 [gihub-simulator-link]: https://github.com/gitaroktato/microservices-availability-simulator
