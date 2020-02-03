@@ -88,29 +88,21 @@ We get somewhat equal availability from both setup, so I say simplicity should b
 ![chained-calls](docs\chained_calls_from_bff.png)
 
 # Summary
-I've seen a few use-cases, when the total availability of the microservice composition was not feasible at all, so I decided to create my own simulation to help demonstrating the effect of high-level architectural decisisons. As we've seen there are many situations, when it's not self explanatory whenever the results will have positive or negative effect. It's good to be aware of other fault-tolerance related patterns though, these also play significant role in making our services more resilient:
+I've seen a few use-cases, when the total availability of the microservice composition was not feasible at all, so I decided to create my own simulation to help demonstrating the effect of high-level architectural decisisons. As we've seen there are many situations, when it's not self explanatory whenever the results will have positive or negative effect. It's good to be aware of other fault-tolerance related patterns though, these also play significant role in making our services more resilient.
+
+You can introduce each of these pattern implementations locally in your own service, by using a  library, or centrally into a proxy or a service mesh. 
 
 ## Retries
-[Cassandra rapid read protection][cassandra-read-protection] is a very good example. This built in functionality ensures that an additional request will be sent if the response is not arriving within a specified timeframe. 
-[gRPC retries][grpc-retries]
+[Cassandra rapid read protection][cassandra-read-protection] is a very good example. This built in functionality ensures that an additional request will be sent if the response is not arriving within a specified timeframe. [Resilience4j][Resilience4j] implements many fault tolerance patterns, including retries. You even have the option to configure [exponential backoff][exponential-backoff] with some level of randomness to your retry strategies. If you're looking for a centralized solution, the most popular proxies and service meshes have these implementated, like [Traefik][Traefik] or [Istio][Istio].
+
 ## Exponential backoff
+It's higly preferable to add exponential backoff and jitter to your retry strategy to avoid services forming a [thundering herd][thundering-herd] over your scarce resource. [Envoy] proxy[envoy-retry-algorithm] offers a default backoff algorithm for example.
 
 ## Fallback
 ## Defaults
 ## Circuit Breakers
-
-Not just circuit breakers or service mesh
-// TODO GRPC features covering these
-// TODO Istio features covering these
-
-Each additional integration point has an additional cost, that needs to be mitigated. Here's a checklist on what to evaluate on each of the connections:
-
-- Timeouts
-- Retry policy
-- Periodic connection validation
--- Connection pool rotation
-- Circuit breakers
-- ...
+## Timeouts
+Your already used connection library should provide timeouts out-of-the-box. You should review these values and reset to a more sane value, because the default configuration is usually too high. Most of the cases it's 30 seconds so make sure you dial it down a bit. 
 
 
 # Out of scope
@@ -131,6 +123,21 @@ https://www.os3.nl/_media/2013-2014/courses/rp1/p17_report.pdf
 https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
 https://www.edureka.co/blog/microservices-design-patterns#Branch
 
-[cassandra-read-protection]: https://docs.datastax.com/en/cassandra-oss/3.x/cassandra/dml/dmlClientRequestsRead.html?hl=rapid%2Cread%2Cprotection#dmlClientRequestsRead__speculative-retry
-[grpc-retries]: https://github.com/grpc/proposal/blob/master/A6-client-retries.md
 [gihub-simulator-link]: https://github.com/gitaroktato/microservices-availability-simulator
+
+## Retries
+https://docs.aws.amazon.com/general/latest/gr/api-retries.html
+https://www.baeldung.com/resilience4j-backoff-jitter
+https://github.com/googleapis/google-http-java-client/blob/master/docs/exponential-backoff.md
+https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
+https://github.com/grpc/proposal/blob/master/A6-client-retries.md
+[cassandra-read-protection]: https://docs.datastax.com/en/cassandra-oss/3.x/cassandra/dml/dmlClientRequestsRead.html?hl=rapid%2Cread%2Cprotection#dmlClientRequestsRead__speculative-retry
+[Resilience4j]: https://resilience4j.readme.io/docs/retry
+[exponential-backoff]: https://resilience4j.readme.io/docs/retry#section-use-a-custom-intervalfunction
+[thundering-herd]: https://en.wikipedia.org/wiki/Thundering_herd_problem
+
+### Retries central control plane
+[envoy-retry-algorithm]: https://www.envoyproxy.io/docs/envoy/v1.13.0/configuration/http/http_filters/router_filter#x-envoy-max-retries
+[Traefik]: https://docs.traefik.io/v2.0/middlewares/retry/
+[Istio]: https://istio.io/docs/concepts/traffic-management/#retries
+
