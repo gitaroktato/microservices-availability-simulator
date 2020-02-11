@@ -17,5 +17,6 @@ See `main.py` as an example on how to use the simulator. You need the following 
 
 
 ## Whitepaers describing relevant topics
--  https://www.csl.cornell.edu/~delimitrou/papers/2019.ispass.qsim.pdf
+- https://www.csl.cornell.edu/~delimitrou/papers/2019.ispass.qsim.pdf
 - https://pdfs.semanticscholar.org/9db6/980f217c4108dc519f35f2d5a1642d3c1421.pdf
+- http://perfdynamics.com/Tools/PDQ.html
