@@ -102,6 +102,9 @@ https://eventhelix.com/RealtimeMantra/FaultHandling/reliability_availability_bas
 
 ## Whitepapers
 https://www.os3.nl/_media/2013-2014/courses/rp1/p17_report.pdf
+https://www.csl.cornell.edu/~delimitrou/papers/2019.ispass.qsim.pdf
+https://pdfs.semanticscholar.org/9db6/980f217c4108dc519f35f2d5a1642d3c1421.pdf
+http://perfdynamics.com/Tools/PDQ.html
 
 ## Articles
 https://azure.microsoft.com/en-us/blog/microservices-an-application-revolution-powered-by-the-cloud/
@@ -134,5 +137,5 @@ https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-configuration
 [Resilience4J-defaults]: https://resilience4j.readme.io/docs/getting-started-3#section-annotations
 
 ## Other interesting links
-[Traefik]: https://docs.traefik.io/v2.0/middlewares/ratelimit/
+[Traefik-ratelimier]: https://docs.traefik.io/v2.0/middlewares/ratelimit/
 [CNCF proxies]: https://landscape.cncf.io/category=service-proxy&format=card-mode&grouping=category&license=open-source
