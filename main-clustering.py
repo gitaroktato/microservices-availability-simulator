@@ -1,13 +1,13 @@
 from main.gui import Draw
-from main.model import Service
+from main.model import Service, Cluster
 
 
 def main():
     # Configuring microservice structure
-    proxy = Service(5, 100, 'proxy')
-    aggregate = Service(5, 100, 'aggregate')
-    app = Service(5, 100, 'app')
-    another_app = Service(5, 100, 'another_app')
+    proxy = Cluster(Service(5, 100, 'proxy'), 10)
+    aggregate = Cluster(Service(5, 100, 'aggregate'), 5)
+    app = Cluster(Service(5, 100, 'app'), 2)
+    another_app = Cluster(Service(5, 100, 'another_app'), 3)
     database = Service(5, 100, 'database')
     another_app_db = Service(5, 100, 'database')
     cache = Service(5, 100, 'cache')

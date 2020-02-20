@@ -1,4 +1,5 @@
-import networkx as nx 
+import networkx as nx
+import math
 import matplotlib.pyplot as plt
 import random
 
@@ -69,6 +70,7 @@ def hierarchy_pos(G, root=None, width=1., vert_gap = 0.2, vert_loc = 0, xcenter 
 
     return _hierarchy_pos(G, root, width, vert_gap, vert_loc, xcenter)
 
+
 class Draw:
 
     DEFAULT_OPTIONS = {
@@ -78,18 +80,54 @@ class Draw:
             'arrowsize': 16
         }
 
-    def draw(self, root_service):
-        graph = nx.DiGraph() 
+    def draw_with_pos(self, root_service: Service, create_pos_function):
+        graph = nx.DiGraph()
         labels = {}
+        graph.add_node(root_service)
         self.add_edges(root_service, graph, labels)
         options = dict(self.DEFAULT_OPTIONS)
         options['labels'] = labels
-        pos = hierarchy_pos(graph, root_service)
+        pos = create_pos_function(graph, root_service)
         nx.draw(graph, pos, **options)
         plt.show()
 
-    def add_edges(self, service, graph, labels):
-        labels[service] = '%s - %.2f%%' % (service.get_name(), service.get_total_availability_percentage())
-        for dependency in service.dependencies:
+    def draw_any(self, root_service: Service):
+        self.draw_with_pos(root_service, lambda graph, service: None)
+
+    def draw_each(self, services: list):
+        graph = nx.DiGraph()
+        labels = {}
+        for service in services:
+            graph.add_node(service)
+            self.add_edges(service, graph, labels)
+        options = dict(self.DEFAULT_OPTIONS)
+        options['labels'] = labels
+        nx.draw_circular(graph, **options)
+        plt.show()
+
+    @staticmethod
+    def create_pos(graph, root_service: Service):
+        pos = hierarchy_pos(graph, root_service)
+        return pos
+
+    @staticmethod
+    def create_radial_pos(graph, root_service: Service):
+        pos = hierarchy_pos(graph, root_service, width=2 * math.pi, xcenter=0)
+        new_pos = {u: (r * math.cos(theta), r * math.sin(theta)) for u, (theta, r) in pos.items()}
+        return new_pos
+
+    def draw_tree(self, root_service: Service):
+        self.draw_with_pos(root_service, Draw.create_pos)
+
+    def draw_radial_tree(self, root_service: Service):
+        self.draw_with_pos(root_service, Draw.create_radial_pos)
+
+    def add_edges(self, service: Service, graph, labels: dict):
+        label = service.get_name()
+        if service.get_size() > 1:
+            label += '[%d]' % service.get_size()
+        label += ' - %.2f%%' % service.get_total_availability_percentage()
+        labels[service] = label
+        for dependency in service.get_dependencies():
             graph.add_edge(service, dependency)
             self.add_edges(dependency, graph, labels)

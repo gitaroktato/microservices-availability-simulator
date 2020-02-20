@@ -6,8 +6,8 @@ def main():
     # Configuring microservice structure
     proxy = Service(5, 100, 'proxy')
     aggregate = Service(5, 100, 'aggregate')
-    app = Service(5, 100, 'app')
-    another_app = Service(5, 100, 'another_app')
+    app = Service(5, 100, 'crud')
+    another_app = Service(5, 100, 'another_crud')
     database = Service(5, 100, 'database')
     another_app_db = Service(5, 100, 'database')
     cache = Service(5, 100, 'cache')
