@@ -1,6 +1,5 @@
 from main.gui import Draw
-from main.model import Service
-from main.aws import S3, CloudFront, Route53, APIGateway, ELB
+from main.aws import S3, CloudFront, Route53, APIGateway, ELB, EC2MultiAZ, DynamoDB, SNS
 
 
 def main():
@@ -14,27 +13,27 @@ def main():
     route53.add_dependency(api_gateway)
     # Supplier
     supplier_elb = ELB('SupplierELB')
-    supplier_ec2 = Service(10, 100000, 'SupplierEC2')
-    supplier_dynamo = Service(1, 100000, 'SupplierDynamo')
+    supplier_ec2 = EC2MultiAZ('SupplierEC2')
+    supplier_dynamo = DynamoDB('SupplierDynamo')
     supplier_elb.add_dependency(supplier_ec2)
     supplier_ec2.add_dependency(supplier_dynamo)
     api_gateway.add_dependency(supplier_elb)
     # Employees
-    employees_elb = Service(10, 100000, 'EmployeesELB')
-    employees_ec2 = Service(10, 100000, 'EmployeesEC2')
-    employees_dynamo = Service(1, 100000, 'EmployeesDynamo')
+    employees_elb = ELB('EmployeesELB')
+    employees_ec2 = EC2MultiAZ('EmployeesEC2')
+    employees_dynamo = DynamoDB('EmployeesDynamo')
     employees_elb.add_dependency(employees_ec2)
     employees_ec2.add_dependency(employees_dynamo)
     api_gateway.add_dependency(employees_elb)
     # Administration
-    administration_elb = Service(10, 100000, 'AdminELB')
-    administration_ec2 = Service(10, 100000, 'AdminEC2')
-    administration_dynamo = Service(1, 100000, 'AdminDynamo')
+    administration_elb = ELB('AdminELB')
+    administration_ec2 = EC2MultiAZ('AdminEC2')
+    administration_dynamo = DynamoDB('AdminDynamo')
     administration_elb.add_dependency(administration_ec2)
     administration_ec2.add_dependency(administration_dynamo)
     api_gateway.add_dependency(administration_elb)
     # SNS
-    sns = Service(100, 100000, 'SNS')
+    sns = SNS('SNS')
     administration_ec2.add_dependency(sns)
     employees_ec2.add_dependency(sns)
     supplier_ec2.add_dependency(sns)
