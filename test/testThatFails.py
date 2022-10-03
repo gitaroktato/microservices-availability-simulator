@@ -7,4 +7,3 @@ class TestThatFails(unittest.TestCase):
 
     def test_fails(self):
         self.fail("Sorry, this test should fail")
-        
