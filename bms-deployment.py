@@ -1,18 +1,19 @@
 from main.gui import Draw
-from main.model import Service, Cluster
+from main.model import Service
+from main.aws import S3, CloudFront, Route53, APIGateway, ELB
 
 
 def main():
     # Configuring microservice structure
-    route53 = Service(10, 100000, 'Route53')
-    s3 = Service(100, 100000, 'S3')
-    cloud_front = Service(100, 100000, 'CloudFront')
+    route53 = Route53('Route53')
+    s3 = S3('S3')
+    cloud_front = CloudFront('CloudFront')
     cloud_front.add_dependency(s3)
     route53.add_dependency(cloud_front)
-    api_gateway = Service(50, 100000, 'APIGateway')
+    api_gateway = APIGateway('APIGateway')
     route53.add_dependency(api_gateway)
     # Supplier
-    supplier_elb = Service(10, 100000, 'SupplierELB')
+    supplier_elb = ELB('SupplierELB')
     supplier_ec2 = Service(10, 100000, 'SupplierEC2')
     supplier_dynamo = Service(1, 100000, 'SupplierDynamo')
     supplier_elb.add_dependency(supplier_ec2)
