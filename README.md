@@ -6,8 +6,8 @@ You need the following libraries installed:
 - `networkx`
 - `mathplotlib`
 - 
-See [`main.py`][main.py] as an example on how to use the simulator.
-Another detailed example can be found in the [examples][examples/README.md] folder.
+See [`main.py`](main.py) as an example on how to use the simulator.
+Another detailed example can be found in the [examples](examples/README.md) folder.
 
 # Screenshots
 ![screenshot1](docs/service_dependency_graph.png)
