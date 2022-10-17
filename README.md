@@ -1,12 +1,12 @@
 # microservices-availability-simulator
-A software that's using Monte Carlo simulation for showing availability of combination of microservices.
+A software that's using Monte Carlo simulation for showing availability for a combination of microservices.
 
 # Usage
 You need the following libraries installed:
 - `networkx`
 - `mathplotlib`
-- 
-See [`main.py`](main.py) as an example on how to use the simulator.
+
+See [`main.py`](main.py) for an example of how to use the simulator.
 Another detailed example can be found in the [examples](examples/README.md) folder.
 I also encourage you to read the [article](https://dzone.com/articles/incorporating-fault-tolerance-into-your-microservi)
 I wrote about this topic. It explains everything in detail.
