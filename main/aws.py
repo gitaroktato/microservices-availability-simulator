@@ -37,6 +37,33 @@ class APIGateway(Service):
         super().__init__(50, 100000, name)
 
 
+class Lambda(Service):
+    """
+    Creates Lambda function component with 99.95% availability.
+    See: https://aws.amazon.com/lambda/sla/
+    """
+    def __init__(self, name: str = ''):
+        super().__init__(50, 100000, name)
+
+
+class IoTCore(Service):
+    """
+    Creates Iot Core component with 99.9% availability.
+    See: https://aws.amazon.com/iot-core/sla/
+    """
+    def __init__(self, name: str = ''):
+        super().__init__(100, 100000, name)
+
+
+class Cognito(Service):
+    """
+    Creates Cognito component with 99.9% availability.
+    See: https://aws.amazon.com/cognito/sla/
+    """
+    def __init__(self, name: str = ''):
+        super().__init__(100, 100000, name)
+
+
 class ELB(Service):
     """
     Creates AWS ELB component with 99.99% availability.
